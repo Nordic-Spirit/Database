@@ -1,0 +1,134 @@
+Table users {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  first_name VARCHAR(30)
+  last_name VARCHAR(50)
+  phone VARCHAR(25)
+  email VARCHAR(100) // UNIQUE
+  password_hash VARCHAR(150)
+  password_salt VARCHAR(150)
+  address VARCHAR(85)
+  postal_code VARCHAR(12)
+  city VARCHAR(85)
+}
+
+Table products {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  name VARCHAR(50)
+  url VARCHAR(200)
+  description VARCHAR(240)
+  price DOUBLE // CHECK(price > 0)
+  alcohol DOUBLE // percentages
+  size DOUBLE // liters
+}
+
+Table categories {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  name VARCHAR(30)
+}
+
+Table products_categories {
+  id SERIAL [pk, increment]
+  product_id INTEGER [ref: > products.id]
+  categories_id INTEGER [ref: > categories.id]
+}
+
+Table orders {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  status ENUM // processing, cancelled, shipped, delivered, returned
+  user_id INTEGER [ref: > users.id]
+  product_id INTEGER [ref: > products.id]
+  employee_id INTEGER [ref: > employees.id]
+}
+
+Table ratings {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  stars INTEGER // CHECK(stars >= 1 AND stars <= 5)
+  description VARCHAR(240)
+  user_id INTEGER [ref: > users.id]
+  product_id INTEGER [ref: > products.id]
+}
+
+Table favorites {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  user_id INTEGER [ref: > users.id]
+  product_id INTEGER [ref: > products.id]
+}
+
+Table campaigns {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  name VARCHAR(40)
+  description VARCHAR(240)
+  starts_at TIMESTAMP
+  ends_at TIMESTAMP
+  discount_percentage INTEGER // CHECK(discount_percentage > 0 AND discount_percentage < 100)
+}
+
+Table products_campaigns {
+  id SERIAL [pk, increment]
+  campaign_id INTEGER [ref: > campaigns.id]
+  product_id INTEGER [ref: > products.id]
+}
+
+Table employees {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  first_name VARCHAR(30)
+  last_name VARCHAR(50)
+  phone VARCHAR(25)
+  email VARCHAR(100) // UNIQUE
+  password_hash VARCHAR(150)
+  password_salt VARCHAR(150)
+  address VARCHAR(85)
+}
+
+Table storages {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+}
+
+Table storages_employees {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  employee_id INTEGER [ref: > employees.id]
+  storage_id INTEGER [ref: > storages.id]
+}
+
+Table storages_products {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  product_id INTEGER [ref: > products.id]
+  storage_id INTEGER [ref: > storages.id]
+}
+
+Table coupon_codes {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  code VARCHAR(40)
+  description VARCHAR(240)
+  discount_percentage INTEGER
+}
+
+Table used_coupon_codes {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  coupon_code_id INTEGER [ref: > coupon_codes.id]
+  user_id INTEGER [ref: > users.id]
+}
+
