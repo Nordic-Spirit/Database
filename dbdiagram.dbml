@@ -22,7 +22,11 @@ Table products {
   description VARCHAR(240)
   price DOUBLE // CHECK(price > 0)
   alcohol DOUBLE // percentages
-  size DOUBLE // liters
+  capacity DOUBLE // liters
+  manufacturer VARCHAR(50)
+  country_of_manufacturer VARCHAR(30)
+  categorie_id INTEGER [ref: > categories.id]
+  sub_categorie_id INTEGER [ref: > sub_categories.id]
 }
 
 Table categories {
@@ -30,13 +34,18 @@ Table categories {
   created_at TIMESTAMP
   updated_at TIMESTAMP
   name VARCHAR(30)
+  descriptin VARCHAR(240)
 }
 
-Table products_categories {
+Table sub_categories {
   id SERIAL [pk, increment]
-  product_id INTEGER [ref: > products.id]
-  categories_id INTEGER [ref: > categories.id]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  name VARCHAR(30)
+  description VARCHAR(240)
+  categorie_id INTEGER [ref: > categories.id]
 }
+
 
 Table orders {
   id SERIAL [pk, increment]
@@ -44,8 +53,14 @@ Table orders {
   updated_at TIMESTAMP
   status ENUM // processing, cancelled, shipped, delivered, returned
   user_id INTEGER [ref: > users.id]
-  product_id INTEGER [ref: > products.id]
+  product_id INTEGER[] [ref: > products.id]
   employee_id INTEGER [ref: > employees.id]
+}
+
+Table orders_products {
+  id SERIAL [pk, increment]
+  product_id INTEGER [ref: > products.id]
+  order_id INTEGER [ref: > orders.id]
 }
 
 Table ratings {
@@ -131,4 +146,3 @@ Table used_coupon_codes {
   coupon_code_id INTEGER [ref: > coupon_codes.id]
   user_id INTEGER [ref: > users.id]
 }
-
