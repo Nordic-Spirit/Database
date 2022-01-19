@@ -8,6 +8,7 @@ Table users {
   email VARCHAR(100) // UNIQUE
   password_hash VARCHAR(150)
   password_salt VARCHAR(150)
+  country VARCHAR(50)
   address VARCHAR(85)
   postal_code VARCHAR(12)
   city VARCHAR(85)
@@ -23,8 +24,8 @@ Table products {
   price DOUBLE // CHECK(price > 0)
   alcohol DOUBLE // percentages
   capacity DOUBLE // liters
-  manufacturer VARCHAR(50)
-  country_of_manufacturer VARCHAR(30)
+  manufacturer VARCHAR(70)
+  country_of_manufacturer VARCHAR(50)
   categorie_id INTEGER [ref: > categories.id]
   sub_categorie_id INTEGER [ref: > sub_categories.id]
 }
@@ -34,7 +35,7 @@ Table categories {
   created_at TIMESTAMP
   updated_at TIMESTAMP
   name VARCHAR(30)
-  descriptin VARCHAR(240)
+  description VARCHAR(240)
 }
 
 Table sub_categories {
@@ -51,9 +52,9 @@ Table orders {
   id SERIAL [pk, increment]
   created_at TIMESTAMP
   updated_at TIMESTAMP
-  status ENUM // processing, cancelled, shipped, delivered, returned
+  paid BOOLEAN
+  delivery_status ENUM // processing, cancelled, shipped, delivered, returnede
   user_id INTEGER [ref: > users.id]
-  product_id INTEGER[] [ref: > products.id]
   employee_id INTEGER [ref: > employees.id]
 }
 
@@ -86,6 +87,7 @@ Table campaigns {
   updated_at TIMESTAMP
   name VARCHAR(40)
   description VARCHAR(240)
+  url_image VARCHAR(200)
   starts_at TIMESTAMP
   ends_at TIMESTAMP
   discount_percentage INTEGER // CHECK(discount_percentage > 0 AND discount_percentage < 100)
@@ -108,26 +110,29 @@ Table employees {
   password_hash VARCHAR(150)
   password_salt VARCHAR(150)
   address VARCHAR(85)
+  role ENUM // no longer working, employee, admin
 }
 
 Table storages {
   id SERIAL [pk, increment]
   created_at TIMESTAMP
   updated_at TIMESTAMP
+  address VARHCAR(85)
+}
+
+Table products_in_storages {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  product_id INTEGER [ref: > products.id]
+  storage_id INTEGER [ref: > storages.id]
 }
 
 Table storages_employees {
   id SERIAL [pk, increment]
   created_at TIMESTAMP
-  employee_id INTEGER [ref: > employees.id]
-  storage_id INTEGER [ref: > storages.id]
-}
-
-Table storages_products {
-  id SERIAL [pk, increment]
-  created_at TIMESTAMP
   updated_at TIMESTAMP
-  product_id INTEGER [ref: > products.id]
+  employee_id INTEGER [ref: > employees.id]
   storage_id INTEGER [ref: > storages.id]
 }
 
@@ -138,6 +143,7 @@ Table coupon_codes {
   code VARCHAR(40)
   description VARCHAR(240)
   discount_percentage INTEGER
+  expiry_date TIMESTAMP
 }
 
 Table used_coupon_codes {
@@ -145,4 +151,17 @@ Table used_coupon_codes {
   created_at TIMESTAMP
   coupon_code_id INTEGER [ref: > coupon_codes.id]
   user_id INTEGER [ref: > users.id]
+}
+
+Table sessions {
+  sid VARCHAR [pk]
+  sess JSON
+  expire TIMESTAMP
+}
+
+TABLE baskets {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  session_sid VARCHAR [ref: > sessions.sid]
+  product_id INTEGER [ref: > products.id]
 }
