@@ -8,10 +8,11 @@ Table users {
   email VARCHAR(100) // UNIQUE
   password_hash VARCHAR(150)
   password_salt VARCHAR(150)
-  country VARCHAR(50)
-  address VARCHAR(85)
-  postal_code VARCHAR(12)
-  city VARCHAR(85)
+  location_id INTEGER [ref: > locations.id]
+  
+  Indexes {
+    (email)[UNIQUE]
+  }
 }
 
 Table products {
@@ -164,4 +165,14 @@ TABLE baskets {
   created_at TIMESTAMP
   session_sid VARCHAR [ref: > sessions.sid]
   product_id INTEGER [ref: > products.id]
+}
+
+Table locations {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+  country VARCHAR(100)
+  city VARCHAR(100)
+  postal_code INTEGER
+  address VARCHAR(200)
 }
